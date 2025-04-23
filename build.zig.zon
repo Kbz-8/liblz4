@@ -1,0 +1,17 @@
+.{
+    .name = .liblz4,
+    .version = "1.10.0",
+    .fingerprint = 0x7e5013bbd01b5332,
+
+    .dependencies = .{
+        .upstream = .{
+            .url = "git+https://github.com/lz4/lz4#67a385a170d2dc331a25677e0d20d96eef0450c5",
+            .hash = "N-V-__8AAAenGQD9gvdDwKUJvSBdZISvluKd92JOmcP7FCGr",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "LICENSE",
+    },
+}
