@@ -61,11 +61,14 @@ pub const Options = struct {
     }
 
     pub fn getStatic(o: Options, b: *std.Build, u: *std.Build.Dependency) !*std.Build.Step.Compile {
-        const lib = b.addStaticLibrary(.{
+        const lib = b.addLibrary(.{
             .name = "lz4",
-            .target = o.target,
-            .optimize = o.optimize,
-            .strip = o.strip,
+            .root_module = b.createModule(.{
+                .target = o.target,
+                .optimize = o.optimize,
+                .strip = o.strip,
+            }),
+            .linkage = .static,
         });
         try o.addCpp(u, lib);
         if (!o.freestanding) {
@@ -75,11 +78,14 @@ pub const Options = struct {
     }
 
     pub fn getShared(o: Options, b: *std.Build, u: *std.Build.Dependency) !*std.Build.Step.Compile {
-        const lib = b.addSharedLibrary(.{
+        const lib = b.addLibrary(.{
             .name = "lz4",
-            .target = o.target,
-            .optimize = o.optimize,
-            .strip = o.strip,
+            .root_module = b.createModule(.{
+                .target = o.target,
+                .optimize = o.optimize,
+                .strip = o.strip,
+            }),
+            .linkage = .dynamic,
         });
         try o.addCpp(u, lib);
         return lib;
@@ -163,7 +169,7 @@ pub const Options = struct {
             c.linkLibC();
         }
 
-        c.root_module.sanitize_c = o.ubsan;
+        c.root_module.sanitize_c = if (o.ubsan) .full else .off;
         c.root_module.sanitize_thread = o.tsan;
 
         if (o.memory_access) |ma| {
